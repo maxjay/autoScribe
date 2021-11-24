@@ -53,7 +53,7 @@ eng_dict = {
 }
 
 def draw(key):
-    path = eng_dict[key].scaled(4)
+    path = eng_dict[key].scaled(scale)
     pts = [(int(p.real), int(p.imag)) for p in (path.point(j/300) for j in range(0, 301))]
     dfs = []
     max_dy = max_dx = min_dy = min_dx = 0
@@ -88,16 +88,21 @@ def draw(key):
 
 mode_switch_shift = 0
 mode = False
+scale = 4
+scale_shift = False
 with keyboard.Events() as events:
     for event in events:
         if event.key == keyboard.Key.esc:
             break
         else:
             if isinstance(event, keyboard.Events.Press):
-                if event.key == keyboard.Key.ctrl:
+                if event.key == keyboard.Key.alt:
+                    if mode:
+                        scale_shift = True
+                        print("Scale Shift on")
                     mode_switch_shift += 1
                     continue
-                if event.key == keyboard.Key.alt:
+                if event.key == keyboard.Key.ctrl:
                     mode_switch_shift += 1
                     continue
                 if event.key == keyboard.Key.enter and mode:
@@ -113,6 +118,13 @@ with keyboard.Events() as events:
                                 mode = True
                             print(f"Draw Mode: {mode}")
                             continue
+                    if scale_shift:
+                        if event.key.char == "=":
+                            scale += 1
+                        elif event.key.char == "-":
+                            scale -= 1
+                        print(scale, "=============")
+                        continue
                     if mode:
                         print("draw")
                         draw(event.key.char)
@@ -120,5 +132,7 @@ with keyboard.Events() as events:
                     pass
             if isinstance(event, keyboard.Events.Release):
                 if event.key == keyboard.Key.ctrl or event.key == keyboard.Key.alt:
+                    if event.key == keyboard.Key.alt:
+                        scale_shift = False
                     mode_switch_shift = max(mode_switch_shift-1, 0)
-                    print(mode_switch_shift)
+                    print(mode_switch_shift, scale_shift)
