@@ -86,16 +86,19 @@ def draw(key):
     print(mouse.position)
 
 
-mode_switch_shift = False
+mode_switch_shift = 0
 mode = False
 with keyboard.Events() as events:
     for event in events:
         if event.key == keyboard.Key.esc:
             break
         else:
-            if isinstance(event, pynput.keyboard.Events.Press):
+            if isinstance(event, keyboard.Events.Press):
                 if event.key == keyboard.Key.ctrl:
-                    mode_switch_shift = True 
+                    mode_switch_shift += 1
+                    continue
+                if event.key == keyboard.Key.alt:
+                    mode_switch_shift += 1
                     continue
                 if event.key == keyboard.Key.enter and mode:
                     draw("tick")
@@ -103,12 +106,11 @@ with keyboard.Events() as events:
                     draw("cross")
                 try:
                     if event.key.char == "a":
-                        if mode_switch_shift:
+                        if mode_switch_shift == 2:
                             if mode:
                                 mode = False
                             else:
                                 mode = True
-                            mode_switch_shift = False
                             print(f"Draw Mode: {mode}")
                             continue
                     if mode:
@@ -116,6 +118,7 @@ with keyboard.Events() as events:
                         draw(event.key.char)
                 except:
                     pass
-            if isinstance(event, pynput.keyboard.Events.Release):
-                if event.key == keyboard.Key.ctrl:
-                    mode_switch_shift = False
+            if isinstance(event, keyboard.Events.Release):
+                if event.key == keyboard.Key.ctrl or event.key == keyboard.Key.alt:
+                    mode_switch_shift = max(mode_switch_shift-1, 0)
+                    print(mode_switch_shift)
