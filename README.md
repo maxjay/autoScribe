@@ -16,7 +16,9 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
-`ctrl+A` to toggle drawing mode on and off.
+`ctrl+alt+A` to toggle drawing mode on and off.
+
+`ctrl++/-` to increase/decrease scale.
 
 **(Make sure to have selected the squiggly line tool thing in QM!!)**
 
