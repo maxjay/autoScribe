@@ -103,19 +103,20 @@ mode_switch_shift = 0
 mode = False
 scale = 4
 scale_shift = False
+print("running")
 with keyboard.Events() as events:
     for event in events:
         if event.key == keyboard.Key.esc:
             break
         else:
             if isinstance(event, keyboard.Events.Press):
-                if event.key == keyboard.Key.alt:
+                if event.key == keyboard.Key.alt or event.key == keyboard.Key.alt_l:
                     if mode:
                         scale_shift = True
                         print("Scale Shift on")
                     mode_switch_shift += 1
                     continue
-                if event.key == keyboard.Key.ctrl:
+                if event.key == keyboard.Key.ctrl or event.key == keyboard.Key.ctrl_l:
                     mode_switch_shift += 1
                     continue
                 if event.key == keyboard.Key.enter and mode:
@@ -123,7 +124,7 @@ with keyboard.Events() as events:
                 if event.key == keyboard.Key.backspace and mode:
                     draw("cross")
                 try:
-                    if event.key.char == "a":
+                    if event.key.vk == 65:
                         if mode_switch_shift == 2:
                             if mode:
                                 mode = False
@@ -132,11 +133,11 @@ with keyboard.Events() as events:
                             print(f"Draw Mode: {mode}")
                             continue
                     if scale_shift:
-                        if event.key.char == "=":
+                        if event.key.vk == 187:
                             scale += 1
-                        elif event.key.char == "-":
+                        elif event.key.vk == 189:
                             scale -= 1
-                        print(scale, "=============")
+                        print(scale)
                         continue
                     if mode:
                         print("draw")
@@ -144,8 +145,8 @@ with keyboard.Events() as events:
                 except:
                     pass
             if isinstance(event, keyboard.Events.Release):
-                if event.key == keyboard.Key.ctrl or event.key == keyboard.Key.alt:
-                    if event.key == keyboard.Key.alt:
+                if event.key == keyboard.Key.ctrl or event.key == keyboard.Key.alt or event.key == keyboard.Key.ctrl_l or event.key == keyboard.Key.alt_l:
+                    if event.key == keyboard.Key.alt or event.key == keyboard.Key.alt_l:
                         scale_shift = False
                     mode_switch_shift = max(mode_switch_shift-1, 0)
                     print(mode_switch_shift, scale_shift)
